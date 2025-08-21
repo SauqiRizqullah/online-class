@@ -1,0 +1,15 @@
+package com.personal.onlineclass.service;
+
+import com.personal.onlineclass.dto.request.SearchTeacherRequest;
+import com.personal.onlineclass.dto.request.TeacherRequest;
+import com.personal.onlineclass.dto.response.TeacherResponse;
+import com.personal.onlineclass.entity.Teacher;
+import org.springframework.data.domain.Page;
+
+public interface TeacherService {
+    TeacherResponse createNewTeacher (TeacherRequest teacherRequest);
+    Teacher getById (String teacherId);
+    Page<Teacher> getAllTeachers (SearchTeacherRequest teacherRequest);
+    String updateById (String teacherId, TeacherRequest teacherRequest);
+    String deleteById (String teacherId);
+}
