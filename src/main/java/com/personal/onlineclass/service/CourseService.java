@@ -1,6 +1,7 @@
 package com.personal.onlineclass.service;
 
 import com.personal.onlineclass.dto.request.CourseRequest;
+import com.personal.onlineclass.dto.request.SearchCourseRequest;
 import com.personal.onlineclass.dto.response.CourseResponse;
 import com.personal.onlineclass.entity.Course;
 import org.springframework.data.domain.Page;

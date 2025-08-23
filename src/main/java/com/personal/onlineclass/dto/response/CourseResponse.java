@@ -1,5 +1,6 @@
 package com.personal.onlineclass.dto.response;
 
+import com.personal.onlineclass.entity.Teacher;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Builder
 public class CourseResponse {
     private String courseId;
-    private TeacherResponse teacherResponse;
+    private Teacher teacher;
     private String title;
     private String description;
     private Long price;
