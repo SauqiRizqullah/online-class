@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
@@ -24,6 +25,7 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public StudentResponse createNewStudent(StudentRequest studentRequest) {
         Student newStudent = Student.builder()
@@ -43,12 +45,14 @@ public class StudentServiceImpl implements StudentService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Student getById(String studentId) {
 
         return studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student's ID was not found!!!"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Student> getAllStudents(SearchStudentRequest studentRequest) {
 
@@ -72,6 +76,7 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAll(specification, pageable);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateById(String studentId, StudentRequest studentRequest) {
 
@@ -86,6 +91,7 @@ public class StudentServiceImpl implements StudentService {
         return studentId + "'s data has been updated!!!";
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String deleteById(String studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student's ID was not found!!!"));
