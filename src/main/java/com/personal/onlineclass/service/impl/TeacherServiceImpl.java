@@ -16,9 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public TeacherResponse createNewTeacher(TeacherRequest teacherRequest) {
         Teacher newTeacher = Teacher.builder()
@@ -45,11 +45,13 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Teacher getById(String teacherId) {
         return teacherRepository.findById(teacherId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Teacher's ID was not found!!!"));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<Teacher> getAllTeachers(SearchTeacherRequest teacherRequest) {
         // 1. Ketika nilai halaman 0, maka buatlah menjadi 1
@@ -77,6 +79,7 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.findAll(specification, pageable);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateById(String teacherId, TeacherRequest teacherRequest) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher's ID was not found!!!"));
@@ -91,10 +94,29 @@ public class TeacherServiceImpl implements TeacherService {
         return teacher + "'s data has been updated!!!";
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public String deleteById(String teacherId) {
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher's ID was not found!!!"));
         teacherRepository.delete(teacher);
         return teacher.getTeacherId() + "'s data has been deleted!!!";
+    }
+
+    private TeacherResponse parseTeacherToTeacherResponse(Teacher teacher){
+        String teacherId;
+
+        if(teacher.getTeacherId() == null){
+            teacherId = null;
+        } else {
+            teacherId = teacher.getTeacherId();
+        }
+
+        return TeacherResponse.builder()
+                .teacherId(teacherId)
+                .teacherName(teacher.getTeacherName())
+                .email(teacher.getEmail())
+                .contactNumber(teacher.getContactNumber())
+                .field(teacher.getField().toString())
+                .build();
     }
 }
