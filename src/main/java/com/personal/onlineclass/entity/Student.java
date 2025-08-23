@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -30,4 +33,12 @@ public class Student {
 
     @Column(name = "img")
     private String img;
+
+    @ManyToMany
+    @JoinTable(
+            name = ConstantTable.COURSE_LIST, // nama tabel junction
+            joinColumns = @JoinColumn(name = "student_id"), // FK dari student
+            inverseJoinColumns = @JoinColumn(name = "course_id") // FK dari course
+    )
+    private Set<Course> courses = new HashSet<>();
 }
