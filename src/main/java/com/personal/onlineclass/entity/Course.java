@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -31,4 +34,8 @@ public class Course {
 
     @Column(name = "price")
     private Long price;
+
+    // ⬇⬇ TAMBAHAN BARU (bidirectional relasi)
+    @ManyToMany(mappedBy = "courses")
+    private Set<Student> students = new HashSet<>();
 }
