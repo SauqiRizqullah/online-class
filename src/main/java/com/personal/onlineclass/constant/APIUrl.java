@@ -5,4 +5,6 @@ public class APIUrl {
     public static final String PATH_TEACHER_ID = "/{teacherId}";
     public static final String STUDENT = "/api/v1/students";
     public static final String PATH_STUDENT_ID = "/{studentId}";
+    public static final String COURSE = "/api/v1/courses";
+    public static final String PATH_COURSE_ID = "/{courseId}";
 }
