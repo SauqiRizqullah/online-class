@@ -7,4 +7,5 @@ public class APIUrl {
     public static final String PATH_STUDENT_ID = "/{studentId}";
     public static final String COURSE = "/api/v1/courses";
     public static final String PATH_COURSE_ID = "/{courseId}";
+    public static final String TRANSACTION = "/api/v1/transactions";
 }
