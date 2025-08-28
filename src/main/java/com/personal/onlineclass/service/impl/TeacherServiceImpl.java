@@ -8,6 +8,7 @@ import com.personal.onlineclass.entity.Teacher;
 import com.personal.onlineclass.repository.TeacherRepository;
 import com.personal.onlineclass.service.TeacherService;
 import com.personal.onlineclass.specification.TeacherSpecification;
+import com.personal.onlineclass.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +26,13 @@ public class TeacherServiceImpl implements TeacherService {
 
     private final TeacherRepository teacherRepository;
 
+    private final ValidationUtil validationUtil;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public TeacherResponse createNewTeacher(TeacherRequest teacherRequest) {
+        validationUtil.validate(teacherRequest);
+
         Teacher newTeacher = Teacher.builder()
                 .teacherName(teacherRequest.getTeacherName())
                 .email(teacherRequest.getEmail())
@@ -82,12 +87,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateById(String teacherId, TeacherRequest teacherRequest) {
+        validationUtil.validate(teacherRequest);
+
         Teacher teacher = teacherRepository.findById(teacherId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher's ID was not found!!!"));
 
         teacher.setTeacherName(teacherRequest.getTeacherName());
         teacher.setEmail(teacherRequest.getEmail());
         teacher.setContactNumber(teacherRequest.getContactNumber());
         teacher.setField(Field.valueOf(teacherRequest.getField()));
+
+        validationUtil.validate(teacher);
 
         teacherRepository.saveAndFlush(teacher);
 

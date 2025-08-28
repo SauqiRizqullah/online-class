@@ -8,6 +8,7 @@ import com.personal.onlineclass.entity.Student;
 import com.personal.onlineclass.repository.StudentRepository;
 import com.personal.onlineclass.service.StudentService;
 import com.personal.onlineclass.specification.StudentSpecification;
+import com.personal.onlineclass.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +26,13 @@ public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
 
+    private final ValidationUtil validationUtil;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public StudentResponse createNewStudent(StudentRequest studentRequest) {
+        validationUtil.validate(studentRequest);
+
         Student newStudent = Student.builder()
                 .studentName(studentRequest.getStudentName())
                 .email(studentRequest.getEmail())
@@ -80,12 +85,16 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public String updateById(String studentId, StudentRequest studentRequest) {
 
+        validationUtil.validate(studentRequest);
+
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Student's ID was not found!!!"));
 
         student.setStudentName(studentRequest.getStudentName());
         student.setEmail(studentRequest.getEmail());
         student.setBackground(studentRequest.getBackground());
         student.setImg(studentRequest.getImg());
+
+        validationUtil.validate(student);
 
         studentRepository.saveAndFlush(student);
         return studentId + "'s data has been updated!!!";

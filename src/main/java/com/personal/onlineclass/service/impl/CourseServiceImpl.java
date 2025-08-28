@@ -9,6 +9,7 @@ import com.personal.onlineclass.repository.CourseRepository;
 import com.personal.onlineclass.service.CourseService;
 import com.personal.onlineclass.service.TeacherService;
 import com.personal.onlineclass.specification.CourseSpecification;
+import com.personal.onlineclass.utils.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
@@ -30,10 +31,16 @@ public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
     private final TeacherService teacherService;
 
+    private final ValidationUtil validationUtil;
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public CourseResponse createNewCourse(CourseRequest courseRequest) {
         Teacher teacher = teacherService.getById(courseRequest.getTeacherId());
+
+        validationUtil.validate(teacher);
+
+        validationUtil.validate(courseRequest);
 
         Course course = Course.builder()
                 .teacher(teacher)
@@ -85,11 +92,15 @@ public class CourseServiceImpl implements CourseService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String updateById(String courseId, CourseRequest courseRequest) {
+        validationUtil.validate(courseRequest);
+
         Course course = courseRepository.findById(courseId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course ID was not found!!!"));
 
         course.setTitle(courseRequest.getTitle());
         course.setDescription(courseRequest.getDescription());
         course.setPrice(course.getPrice());
+
+        validationUtil.validate(course);
 
         courseRepository.saveAndFlush(course);
         return "Course' detaiils have been updated!!!";
