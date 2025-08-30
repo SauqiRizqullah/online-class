@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -45,9 +46,13 @@ public class Teacher implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Field field;
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    // untuk many to many ada 2 FetchType Eager dan Lazy
+    private List<Role> role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.stream().map(role -> new SimpleGrantedAuthority(role.getUserRole().name())).toList();
     }
 
     @Column(name = "is_enable")
@@ -80,6 +85,7 @@ public class Teacher implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return isEnable;
+        // ini bisa buat otp, jadi pertama buat akun jadi false dulu, kalau sudah selesaikan otp beru jadi true
+        return isEnable; // jadi nanti pertama buat akun kita true dulu karena belum menerapkan otp
     }
 }
