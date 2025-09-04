@@ -36,7 +36,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegisterResponse register(AuthRequest authRequest) {
-        Role role = roleService.getOrSave(UserRole.TEACHER);
+        Role role = roleService.getOrSave(UserRole.ROLE_TEACHER);
         String hashPassword = passwordEncoder.encode(authRequest.getPassword());
         Teacher teacher = Teacher.builder()
                 .username(authRequest.getUsername())

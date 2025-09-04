@@ -1,6 +1,6 @@
 package com.personal.onlineclass.constant;
 
 public enum UserRole {
-    TEACHER,
-    STUDENT
+    ROLE_TEACHER,
+    ROLE_STUDENT
 }

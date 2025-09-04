@@ -2,6 +2,7 @@ package com.personal.onlineclass.controller;
 
 import com.personal.onlineclass.dto.response.CommonResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,5 +31,30 @@ public class ErrorController {
                 .message(e.getMessage())
                 .build();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<CommonResponse<?>> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException e) {
+        CommonResponse.CommonResponseBuilder<Object> builder = CommonResponse.builder();
+
+        HttpStatus httpStatus;
+
+        if (e.getMessage().contains("foreign key constraint")){
+            builder.statusCode(HttpStatus.BAD_REQUEST.value());
+            builder.message("tidak dapat menghapus data karena ada referensi dari tabel lain");
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (e.getMessage().contains("unique constraint") || e.getMessage().contains("Duplicate entry")) {
+            builder.statusCode(HttpStatus.CONFLICT.value());
+            builder.message("Data already exist");
+            httpStatus = HttpStatus.CONFLICT;
+        } else {
+            // selain dari ini gw lupa juga errornya apa, ini kita buat jadi Internal Server Error aja
+            // tapi nanti kalau di kantor kalian ada penanganan khusus bisa di tambahkan ifnya
+            builder.statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            builder.message("Internal Server Error");
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return ResponseEntity.status(httpStatus).body(builder.build());
     }
 }
