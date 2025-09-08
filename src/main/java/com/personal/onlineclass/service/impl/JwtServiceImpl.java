@@ -63,10 +63,13 @@ public class JwtServiceImpl implements JwtService {
     public boolean verifyJwtToken(String token) {
         log.info("VERIFYING JWT TOKEN FOR TEACHER!!!");
         try {
+            log.info("Setting HMAC512 algorithm...");
             Algorithm algorithm = Algorithm.HMAC512(JWT_SECRET); // untuk membuktikan apakah JWT token sama
+            log.info("Verifying with JWT...");
             JWTVerifier jwtVerifier = JWT.require(algorithm)
                     .withIssuer(ISSUER)
                     .build();
+            log.info("Parsing JWT token...");
             jwtVerifier.verify(parseJwt(token));
             return true;
         } catch (JWTVerificationException exception){
@@ -78,11 +81,15 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public JwtClaims getClaimsByToken(String token) {
         try {
+            log.info("Setting HMAC512 algorithm...");
             Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+            log.info("Verifying with JWT...");
             JWTVerifier jwtVerifier = JWT.require(algorithm)
                     .withIssuer(ISSUER)
                     .build();
+            log.info("Decoding JWT...");
             DecodedJWT decodedJWT = jwtVerifier.verify(parseJwt(token));
+            log.info("Returning JWT claims!!!");
             return JwtClaims.builder()
                     .accountId(decodedJWT.getId())
                     .roles(decodedJWT.getClaim("roles").asList(String.class))
@@ -96,7 +103,12 @@ public class JwtServiceImpl implements JwtService {
 
     private String parseJwt(String token){
         if (token != null && token.startsWith("Bearer ")) {
-
+            log.info("");
+            log.info("Sub:");
+            log.info("");
+            log.info("Successfully putting in header!!!");
+            log.info("");
+            log.info("Back to main!!!");
             return token.substring(7);
         }
         return null;
