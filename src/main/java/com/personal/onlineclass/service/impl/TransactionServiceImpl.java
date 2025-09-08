@@ -36,9 +36,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public TransactionResponse createNewTransaction(TransactionRequest transactionRequest) {
-
+        log.info("Creating a New Transaction!!!");
+        log.info("");
+        log.info("Finding a student object...");
         Student student = studentService.getById(transactionRequest.getStudentId());
 
+        log.info("Building a transaction object...");
         Transaction trx = Transaction.builder()
                 .student(student)
                 .trxDate(new Date())
@@ -46,6 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
 
 //        Transaction savedTransaction = transactionRepository.save(trx);
 
+        log.info("Adding transaction details...");
         List<TransactionDetail> trxDetail = transactionRequest.getTransactionDetails().stream()
                 .map(detailRequest -> {
                     Course course = courseService.getById(detailRequest.getCourseId());
@@ -59,20 +63,26 @@ public class TransactionServiceImpl implements TransactionService {
                             .build();
                 }).toList();
 
-        log.info("Successfully bought!!!");
+        log.info("Successfully adding transaction details!!!");
+        log.info("");
+        log.info("Setting transaction details...");
 
         trx.setTransactionDetails(trxDetail);
+
 
         Long totalAmounts = trxDetail.stream()
                 .mapToLong(TransactionDetail::getPrice)
                 .sum();
-
+        log.info("Setting transaction total amounts...");
         trx.setAmounts(totalAmounts);
 
+        log.info("Saving transaction into database...");
         Transaction savedTransaction = transactionRepository.save(trx);
 
+        log.info("Saving transaction details into database...");
         transactionDetailService.createBulk(trxDetail);
 
+        log.info("Creating transcation detail response...");
         List<TransactionDetailResponse> trxDetailResponse = trxDetail.stream().map(
                 detail -> {
                     return TransactionDetailResponse.builder()
@@ -84,7 +94,7 @@ public class TransactionServiceImpl implements TransactionService {
         ).toList();
 
 
-
+        log.info("Returning transaction response!!!");
         return TransactionResponse.builder()
                 .trxId(savedTransaction.getTrxId())
                 .studentId(savedTransaction.getStudent().getStudendId())
@@ -98,8 +108,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public List<TransactionResponse> getAllTransactions() {
 
+        log.info("Getting All Transactions!!!");
+        log.info("");
         List<Transaction> transactions = transactionRepository.findAll();
 
+        log.info("Retrieving all detail transactions...");
         return transactions.stream().map(trx -> {
             List<TransactionDetailResponse> trxDetailResponse = trx.getTransactionDetails().stream().map( trxDetail -> {
                 return TransactionDetailResponse.builder()
@@ -109,6 +122,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .build();
             }).toList();
 
+            log.info("Returning Transaction Details!!!");
             return TransactionResponse.builder()
                     .trxId(trx.getTrxId())
                     .studentId(trx.getStudent().getStudendId())
