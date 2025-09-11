@@ -5,7 +5,6 @@ import com.personal.onlineclass.constant.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.transaction.annotation.Transactional;
 
 @Setter
 @Getter
@@ -24,5 +23,5 @@ public class Role {
 
     @Column(name = "user_role")
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole role;
 }

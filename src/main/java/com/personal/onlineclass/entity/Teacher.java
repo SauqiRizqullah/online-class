@@ -52,7 +52,7 @@ public class Teacher implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return role.stream().map(role -> new SimpleGrantedAuthority(role.getUserRole().name())).toList();
+        return role.stream().map(role -> new SimpleGrantedAuthority(role.getRole().name())).toList();
     }
 
     @Column(name = "is_enable")

@@ -16,10 +16,10 @@ public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
 
     @Override
-    public Role getOrSave(UserRole userRole) {
+    public Role getOrSave(UserRole role) {
 
         log.info("Returning Role!!!");
-        return roleRepository.findByRole(userRole)
-                .orElseGet(() -> roleRepository.saveAndFlush(Role.builder().userRole(userRole).build()));
+        return roleRepository.findByRole(role)
+                .orElseGet(() -> roleRepository.saveAndFlush(Role.builder().role(role).build()));
     }
 }
