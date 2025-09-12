@@ -1,7 +1,9 @@
 package com.personal.onlineclass.service.impl;
 
+import com.personal.onlineclass.constant.Field;
 import com.personal.onlineclass.constant.UserRole;
 import com.personal.onlineclass.dto.request.AuthRequest;
+import com.personal.onlineclass.dto.request.RegisterRequest;
 import com.personal.onlineclass.dto.response.LoginResponse;
 import com.personal.onlineclass.dto.response.RegisterResponse;
 import com.personal.onlineclass.entity.Role;
@@ -37,18 +39,22 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Override
-    public RegisterResponse register(AuthRequest authRequest) {
+    public RegisterResponse register(RegisterRequest registerRequest) {
 
         log.info("Creating a New Account of Teacher!!!");
         log.info("");
         log.info("Getting a teacher role...");
         Role role = roleService.getOrSave(UserRole.ROLE_TEACHER);
         log.info("Encoding a password...");
-        String hashPassword = passwordEncoder.encode(authRequest.getPassword());
+        String hashPassword = passwordEncoder.encode(registerRequest.getPassword());
         log.info("Building a teacher object...");
         Teacher teacher = Teacher.builder()
-                .username(authRequest.getUsername())
+                .email(registerRequest.getEmail())
+                .teacherName(registerRequest.getTeacherName())
+                .username(registerRequest.getUsername())
                 .password(hashPassword)
+                .field(Field.valueOf(registerRequest.getField().toUpperCase()))
+                .contactNumber(registerRequest.getContactNumber())
                 .role(List.of(role))
                 .isEnable(true)
                 .build();
@@ -60,7 +66,11 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("Returning register response!!!");
         return RegisterResponse.builder()
+                .teacherId(teacher.getTeacherId())
+                .email(teacher.getEmail())
+                .teacherName(teacher.getTeacherName())
                 .username(teacher.getUsername())
+                .field(teacher.getField().name())
                 .roles(roles)
                 .build();
     }

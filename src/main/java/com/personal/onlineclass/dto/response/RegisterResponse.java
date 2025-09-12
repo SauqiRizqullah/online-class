@@ -10,6 +10,10 @@ import java.util.List;
 @Setter
 @Builder
 public class RegisterResponse {
+    private String teacherId;
+    private String email;
+    private String teacherName;
     private String username;
+    private String field;
     private List<String> roles;
 }

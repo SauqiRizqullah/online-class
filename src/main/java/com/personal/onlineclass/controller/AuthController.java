@@ -2,6 +2,7 @@ package com.personal.onlineclass.controller;
 
 import com.personal.onlineclass.constant.APIUrl;
 import com.personal.onlineclass.dto.request.AuthRequest;
+import com.personal.onlineclass.dto.request.RegisterRequest;
 import com.personal.onlineclass.dto.response.CommonResponse;
 import com.personal.onlineclass.dto.response.LoginResponse;
 import com.personal.onlineclass.dto.response.RegisterResponse;
@@ -28,8 +29,8 @@ public class AuthController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<?>> registerUser(@RequestBody AuthRequest authRequest){
-        RegisterResponse register = authService.register(authRequest);
+    public ResponseEntity<CommonResponse<?>> registerUser(@RequestBody RegisterRequest registerRequest){
+        RegisterResponse register = authService.register(registerRequest);
 
         CommonResponse<RegisterResponse> response = CommonResponse.<RegisterResponse>builder()
                 .statusCode(HttpStatus.CREATED.value())
