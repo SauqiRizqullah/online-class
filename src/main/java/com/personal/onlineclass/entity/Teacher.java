@@ -51,10 +51,6 @@ public class Teacher implements UserDetails {
     // untuk many to many ada 2 FetchType Eager dan Lazy
     private List<Role> role;
 
-    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Course> courses;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.stream().map(role -> new SimpleGrantedAuthority(role.getRole().name())).toList();
