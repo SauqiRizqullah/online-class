@@ -1,6 +1,5 @@
 package com.personal.onlineclass.config;
 
-import com.personal.onlineclass.repository.TeacherRepository;
 import com.personal.onlineclass.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -19,12 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class BeanConfiguration {
-
-    @Bean
-    public UserDetailsService userDetailsService(TeacherRepository teacherRepository) {
-        return username -> teacherRepository.findTeacherByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){
