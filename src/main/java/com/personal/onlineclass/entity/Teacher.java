@@ -46,7 +46,7 @@ public class Teacher implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Field field;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     // untuk many to many ada 2 FetchType Eager dan Lazy
     private List<Role> role;
 
