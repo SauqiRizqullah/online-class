@@ -63,8 +63,8 @@ public class JwtServiceImpl implements JwtService {
     public boolean verifyJwtToken(String token) {
         log.info("VERIFYING JWT TOKEN FOR TEACHER!!!");
         try {
-            log.info("Setting HMAC512 algorithm...");
-            Algorithm algorithm = Algorithm.HMAC512(JWT_SECRET); // untuk membuktikan apakah JWT token sama
+            log.info("Setting HMAC256 algorithm...");
+            Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET); // untuk membuktikan apakah JWT token sama
             log.info("Verifying with JWT...");
             JWTVerifier jwtVerifier = JWT.require(algorithm)
                     .withIssuer(ISSUER)
@@ -81,7 +81,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public JwtClaims getClaimsByToken(String token) {
         try {
-            log.info("Setting HMAC512 algorithm...");
+            log.info("Setting HMAC256 algorithm...");
             Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
             log.info("Verifying with JWT...");
             JWTVerifier jwtVerifier = JWT.require(algorithm)
@@ -91,7 +91,7 @@ public class JwtServiceImpl implements JwtService {
             DecodedJWT decodedJWT = jwtVerifier.verify(parseJwt(token));
             log.info("Returning JWT claims!!!");
             return JwtClaims.builder()
-                    .accountId(decodedJWT.getId())
+                    .accountId(decodedJWT.getSubject())
                     .roles(decodedJWT.getClaim("roles").asList(String.class))
                     .build();
 

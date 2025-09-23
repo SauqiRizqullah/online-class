@@ -38,16 +38,20 @@ public class AuthenticationFilter extends OncePerRequestFilter {
 
             if (bearerToken != null && jwtService.verifyJwtToken(bearerToken)) {
                 JwtClaims jwtClaims = jwtService.getClaimsByToken(bearerToken);
+                log.info("Get JWT Claims: {}", jwtClaims);
                 Teacher teacher = teacherService.getById(jwtClaims.getAccountId());
+                log.info("Authenticated User: {}", teacher);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         teacher.getUsername(),
                         null,
                         teacher.getAuthorities()
                 );
+                log.info("Authentication: {}", authentication);
 
                 authentication.setDetails(new WebAuthenticationDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("Set User Authentication for {} - {}", teacher.getTeacherId(), teacher.getUsername());
             }
         } catch (Exception e) {
             log.error("Cannot set user authentication: {}", e.getMessage());
