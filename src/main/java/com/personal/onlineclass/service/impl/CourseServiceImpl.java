@@ -126,7 +126,7 @@ public class CourseServiceImpl implements CourseService {
         log.info("Setting course's description...");
         course.setDescription(courseRequest.getDescription());
         log.info("Setting course's price...");
-        course.setPrice(course.getPrice());
+        course.setPrice(courseRequest.getPrice());
 
         log.info("Validating course's object...");
         validationUtil.validate(course);
