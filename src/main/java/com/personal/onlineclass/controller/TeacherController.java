@@ -3,6 +3,7 @@ package com.personal.onlineclass.controller;
 import com.personal.onlineclass.constant.APIUrl;
 import com.personal.onlineclass.dto.request.SearchTeacherRequest;
 import com.personal.onlineclass.dto.request.TeacherRequest;
+import com.personal.onlineclass.dto.response.CommonResponse;
 import com.personal.onlineclass.dto.response.PagingResponse;
 import com.personal.onlineclass.dto.response.TeacherResponse;
 import com.personal.onlineclass.entity.Teacher;
@@ -46,7 +47,7 @@ public class TeacherController {
     }
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<PagingResponse> getAllTeachers (
+    public ResponseEntity<CommonResponse<Page<Teacher>>> getAllTeachers (
             @RequestParam(name = "page", defaultValue = "1") Integer page,
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             @RequestParam(name = "sortBy", defaultValue = "teacherId") String sortBy,
@@ -75,8 +76,14 @@ public class TeacherController {
                 .hasPrevious(allTeachers.hasPrevious())
                 .build();
 
+        CommonResponse<Page<Teacher>> response = CommonResponse.<Page<Teacher>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Success")
+                .data(allTeachers)
+                .build();
+
         // 4. Mengembalikan Paging Response
-        return ResponseEntity.ok(pagingResponse);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping(path = APIUrl.PATH_TEACHER_ID, produces = "application/json")
