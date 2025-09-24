@@ -17,6 +17,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -145,6 +150,13 @@ public class TeacherServiceImpl implements TeacherService {
         return teacher.getTeacherId() + "'s data has been deleted!!!";
     }
 
+    @Override
+    public Teacher getByContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return teacherRepository.findTeacherByUsername(authentication.getPrincipal().toString())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher's username was not found!!!"));
+    }
+
     private TeacherResponse parseTeacherToTeacherResponse(Teacher teacher){
         String teacherId;
 
@@ -161,5 +173,10 @@ public class TeacherServiceImpl implements TeacherService {
                 .contactNumber(teacher.getContactNumber())
                 .field(teacher.getField().toString())
                 .build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return teacherRepository.findTeacherByUsername(username).orElseThrow(() -> new UsernameNotFoundException("username not found"));
     }
 }
