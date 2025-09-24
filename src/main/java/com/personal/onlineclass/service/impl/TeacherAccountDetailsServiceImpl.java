@@ -28,7 +28,7 @@ public class TeacherAccountDetailsServiceImpl implements UserDetailsService, Tea
     @Override
     public Teacher getByContext() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return teacherRepository.findByUsername(authentication.getPrincipal().toString())
+        return teacherRepository.findTeacherByUsername(authentication.getPrincipal().toString())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher account is not found!!!"));
     }
 
