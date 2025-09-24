@@ -10,8 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class CourseRequest {
-    @NotBlank(message = "Teacher's ID must be filled!!!")
-    private String teacherId;
     @NotBlank(message = "Course Title must be filled!!!")
     private String title;
     @NotBlank(message = "Description must be filled!!!")

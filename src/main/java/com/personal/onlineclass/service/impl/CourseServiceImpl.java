@@ -40,8 +40,8 @@ public class CourseServiceImpl implements CourseService {
     public CourseResponse createNewCourse(CourseRequest courseRequest) {
         log.info("Creating a New Course!!!");
         log.info("");
-        log.info("Finding a teacher object...");
-        Teacher teacher = teacherService.getById(courseRequest.getTeacherId());
+        log.info("Finding a teacher object through context...");
+        Teacher teacher = teacherService.getByContext();
 
         log.info("Validating a teacher object....");
         validationUtil.validate(teacher);
